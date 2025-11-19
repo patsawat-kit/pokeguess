@@ -312,14 +312,14 @@ export default function PokemonGame() {
                 onChange={(e) => setGuess(e.target.value)}
                 disabled={isChecking}
                 placeholder={isChecking ? "PROCESSING..." : "ENTER POKEMON NAME"}
-                className="w-full bg-slate-800 text-green-400 font-mono text-xl p-4 rounded border-4 border-slate-600 focus:outline-none focus:border-blue-500 uppercase placeholder:text-slate-600 disabled:opacity-50"
+                className="w-full bg-slate-800 text-green-400 font-mono text-xl p-4 rounded border-4 border-slate-600 focus:outline-none focus:border-blue-500 placeholder:text-slate-600 disabled:opacity-50"
                 autoFocus
                 />
                 <div className="flex gap-4">
                 <button 
                     type="submit" 
                     disabled={isChecking}
-                    className={`flex-1 text-white text-xl font-bold py-4 rounded shadow-[0_6px_0_rgb(29,78,216)] active:shadow-none active:translate-y-[6px] transition-all uppercase border-2 border-blue-700
+                    className={`flex-1 text-white text-xl font-bold py-4 rounded shadow-[0_6px_0_rgb(29,78,216)] active:shadow-none active:translate-y-[6px] transition-all border-2 border-blue-700
                     ${isChecking ? "bg-slate-500 shadow-none translate-y-[6px] border-slate-600" : "bg-blue-500 hover:bg-blue-400"}
                     `}
                 >
@@ -329,7 +329,7 @@ export default function PokemonGame() {
                     type="button"
                     onClick={handleGiveUp}
                     disabled={isChecking}
-                    className="w-1/3 bg-yellow-500 hover:bg-yellow-400 text-yellow-900 text-lg font-bold py-4 rounded shadow-[0_6px_0_rgb(161,98,7)] active:shadow-none active:translate-y-[6px] transition-all uppercase border-2 border-yellow-700 disabled:opacity-50 disabled:shadow-none disabled:translate-y-[6px]"
+                    className="w-1/3 bg-yellow-500 hover:bg-yellow-400 text-yellow-900 text-lg font-bold py-4 rounded shadow-[0_6px_0_rgb(161,98,7)] active:shadow-none active:translate-y-[6px] transition-all border-2 border-yellow-700 disabled:opacity-50 disabled:shadow-none disabled:translate-y-[6px]"
                 >
                     Skip
                 </button>
@@ -339,7 +339,7 @@ export default function PokemonGame() {
             <div className="flex gap-2">
                 <button 
                 onClick={fetchPokemon}
-                className="w-full bg-slate-800 hover:bg-slate-700 text-white text-xl font-bold py-5 rounded shadow-[0_6px_0_rgb(0,0,0)] active:shadow-none active:translate-y-[6px] transition-all uppercase border-2 border-slate-900"
+                className="w-full bg-slate-800 hover:bg-slate-700 text-white text-xl font-bold py-5 rounded shadow-[0_6px_0_rgb(0,0,0)] active:shadow-none active:translate-y-[6px] transition-all border-2 border-slate-900"
                 >
                 {isWinner ? "Search Next Pokémon" : "Reboot System"}
                 </button>
@@ -347,7 +347,7 @@ export default function PokemonGame() {
             )}
             
             <div className="text-center pt-2">
-                <span className="text-red-900 font-bold text-sm uppercase tracking-[0.2em] bg-red-400 px-4 py-2 rounded-full shadow-sm border border-red-800">
+                <span className="text-green-900 font-bold text-sm tracking-[0.2em] bg-green-400 px-4 py-2 rounded shadow-sm border border-red-800">
                     Current Streak: {streak}
                 </span>
             </div>
