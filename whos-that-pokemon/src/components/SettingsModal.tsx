@@ -15,6 +15,7 @@ interface SettingsModalProps {
     selectedGens: number[];
     toggleGen: (gen: number) => void;
     playSound: (type: "beep" | "success" | "error") => void;
+    currentView: string;
 }
 
 export default function SettingsModal({
@@ -31,6 +32,7 @@ export default function SettingsModal({
     selectedGens,
     toggleGen,
     playSound,
+    currentView,
 }: SettingsModalProps) {
     if (!showSettings) return null;
 
@@ -170,27 +172,29 @@ export default function SettingsModal({
                         </div>
                     </div>
 
-                    {/* 3. Gen Select */}
-                    <div>
-                        <label className="text-slate-300 font-mono text-sm block mb-2">GENERATION FILTER</label>
-                        <div className="grid grid-cols-3 gap-2" role="group" aria-label="Pokemon generation selection">
-                            {ALL_GENERATIONS.map((gen) => (
-                                <button
-                                    key={gen}
-                                    onClick={() => toggleGen(gen)}
-                                    className={`py-2 text-sm font-mono border-2 rounded transition-all min-h-[44px]
-                    ${selectedGens.includes(gen)
-                                            ? 'bg-green-500/20 border-green-500 text-green-400 shadow-[0_0_10px_rgba(74,222,128,0.3)]'
-                                            : 'bg-slate-700 border-slate-600 text-slate-500 hover:border-slate-500'
-                                        }`}
-                                    aria-pressed={selectedGens.includes(gen)}
-                                    aria-label={`Generation ${gen}`}
-                                >
-                                    GEN {gen}
-                                </button>
-                            ))}
+                    {/* 3. Gen Select - Only show in Silhouette Mode */}
+                    {currentView === 'silhouette' && (
+                        <div>
+                            <label className="text-slate-300 font-mono text-sm block mb-2">GENERATION FILTER</label>
+                            <div className="grid grid-cols-3 gap-2" role="group" aria-label="Pokemon generation selection">
+                                {ALL_GENERATIONS.map((gen) => (
+                                    <button
+                                        key={gen}
+                                        onClick={() => toggleGen(gen)}
+                                        className={`py-2 text-sm font-mono border-2 rounded transition-all min-h-[44px]
+                        ${selectedGens.includes(gen)
+                                                ? 'bg-green-500/20 border-green-500 text-green-400 shadow-[0_0_10px_rgba(74,222,128,0.3)]'
+                                                : 'bg-slate-700 border-slate-600 text-slate-500 hover:border-slate-500'
+                                            }`}
+                                        aria-pressed={selectedGens.includes(gen)}
+                                        aria-label={`Generation ${gen}`}
+                                    >
+                                        GEN {gen}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 <div className="bg-slate-900 p-4 border-t border-slate-600 shrink-0">

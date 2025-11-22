@@ -19,21 +19,7 @@ export default function Pokedex({ loading, isChecking, pokemon, isRevealed }: Po
     };
 
     return (
-        <div className="order-2 md:order-1 w-full max-w-2xl bg-red-600 rounded-xl shadow-2xl overflow-hidden border-b-8 border-r-8 border-red-800 relative z-10">
-
-            {/* Top Decor */}
-            <div className="flex items-start p-4 md:p-6 pb-0 gap-4 md:gap-6">
-                <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-full bg-blue-400 border-4 md:border-8 border-white shadow-inner flex-shrink-0 transition-all">
-                    <div className="absolute top-2 left-2 md:top-3 md:left-3 w-4 h-4 md:w-8 md:h-8 bg-white rounded-full opacity-50 blur-[2px]"></div>
-                    {(loading || isChecking) && <div className="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-50"></div>}
-                </div>
-
-                <div className="flex gap-2 md:gap-3 mt-1 md:mt-2">
-                    <div className={`w-4 h-4 md:w-6 md:h-6 rounded-full border-2 border-red-400 ${isChecking ? 'bg-red-500 animate-pulse' : 'bg-red-900'}`}></div>
-                    <div className={`w-4 h-4 md:w-6 md:h-6 rounded-full border-2 border-yellow-100 ${isChecking ? 'bg-yellow-300 animate-pulse delay-75' : 'bg-yellow-400'}`}></div>
-                    <div className={`w-4 h-4 md:w-6 md:h-6 rounded-full border-2 border-green-200 ${isChecking ? 'bg-green-400 animate-pulse delay-150' : 'bg-green-500'}`}></div>
-                </div>
-            </div>
+        <div className="order-2 md:order-1 w-full bg-red-600 rounded-xl shadow-2xl overflow-hidden border-b-8 border-r-8 border-red-800 relative z-10">
 
             {/* Screen Area */}
             <div className="p-4 md:p-8 pt-4 md:pt-6">
@@ -56,7 +42,7 @@ export default function Pokedex({ loading, isChecking, pokemon, isRevealed }: Po
                                 <img
                                     src={pokemon.image}
                                     alt={isRevealed ? `Pokemon: ${pokemon.name}` : "Mystery Pokemon"}
-                                    className={`w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 object-contain z-10 rendering-pixelated transition-all duration-300
+                                    className={`w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 object-contain z-10 rendering-pixelated transition-all duration-300 select-none
                     ${isRevealed
                                             ? "brightness-100 filter-none scale-110"
                                             : "brightness-0 contrast-200 opacity-60"
@@ -64,6 +50,8 @@ export default function Pokedex({ loading, isChecking, pokemon, isRevealed }: Po
                     ${isChecking ? "animate-pulse opacity-80 scale-105" : ""} 
                   `}
                                     onError={handleImageError}
+                                    draggable={false}
+                                    onContextMenu={(e) => e.preventDefault()}
                                 />
                             )
                         )}
