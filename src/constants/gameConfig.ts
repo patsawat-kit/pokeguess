@@ -5,6 +5,7 @@ export const BGM_PLAYLIST = [
   { title: "Cinnabar Island", file: "/music/cinnabar.mp3" },
   { title: "Pokemon Center", file: "/music/center.mp3" },
   { title: "Road to Viridian City", file: "/music/roadtoviri.mp3" },
+  { title: "Eterna City", file: "/music/eternacity.mp3" },
 ];
 
 export const GEN_RANGES: Record<number, [number, number]> = {
