@@ -9,14 +9,14 @@ A nostalgic Pokémon guessing game inspired by the classic "Who's That Pokémon?
 
 ## ✨ Features
 
-- 🎯 **All 9 Generations** - Choose from Gen 1-9 Pokémon
-- 🎵 **Authentic Music** - Classic Pokémon soundtrack (Pallet Town, Cinnabar Island, etc.)
-- 🔊 **Sound Effects** - Pokémon cries and retro UI sounds
-- 🎨 **Retro Design** - Authentic Pokédex aesthetic with pixel font
-- ♿ **Accessible** - Full WCAG compliance with ARIA labels and keyboard navigation
-- 📱 **Responsive** - Works perfectly on mobile and desktop
-- 🌙 **Dark/Light Mode** - Toggle between themes
-- 🎮 **Streak Tracking** - Keep track of your winning streak
+-  **All 9 Generations** - Choose from Gen 1-9 Pokémon
+-  **Authentic Music** - Classic Pokémon soundtrack (Pallet Town, Cinnabar Island, etc.)
+-  **Sound Effects** - Pokémon cries and retro UI sounds
+-  **Retro Design** - Authentic Pokédex aesthetic with pixel font
+-  **Accessible** - Full WCAG compliance with ARIA labels and keyboard navigation
+-  **Responsive** - Works perfectly on mobile and desktop
+-  **Dark/Light Mode** - Toggle between themes
+-  **Streak Tracking** - Keep track of your winning streak
 
 ## 🚀 Quick Start
 
@@ -71,34 +71,6 @@ src/
 └── constants/
     └── gameConfig.ts       # Configuration constants
 ```
-
-## 🌐 Deployment
-
-### Deploy to Vercel (Recommended)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=<your-repo-url>)
-
-1. Push your code to GitHub
-2. Import your repository on [Vercel](https://vercel.com)
-3. Vercel will automatically detect Next.js and deploy
-4. Your app will be live in minutes!
-
-### Deploy to Netlify
-
-1. Build the project: `npm run build`
-2. Deploy the `.next` folder to Netlify
-3. Configure build settings:
-   - Build command: `npm run build`
-   - Publish directory: `.next`
-
-### Deploy to Other Platforms
-
-The app is a static Next.js site and can be deployed to:
-- GitHub Pages
-- Cloudflare Pages
-- AWS Amplify
-- Railway
-- Render
 
 ## 🎮 How to Play
 
