@@ -1,36 +1,173 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Who's That Pokémon? 🎮
 
-## Getting Started
+A nostalgic Pokémon guessing game inspired by the classic "Who's That Pokémon?" TV segment. Test your knowledge across all 9 generations with authentic music and sound effects!
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16.0.3-black)
+![React](https://img.shields.io/badge/React-19.2.0-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
+
+## ✨ Features
+
+- 🎯 **All 9 Generations** - Choose from Gen 1-9 Pokémon
+- 🎵 **Authentic Music** - Classic Pokémon soundtrack (Pallet Town, Cinnabar Island, etc.)
+- 🔊 **Sound Effects** - Pokémon cries and retro UI sounds
+- 🎨 **Retro Design** - Authentic Pokédex aesthetic with pixel font
+- ♿ **Accessible** - Full WCAG compliance with ARIA labels and keyboard navigation
+- 📱 **Responsive** - Works perfectly on mobile and desktop
+- 🌙 **Dark/Light Mode** - Toggle between themes
+- 🎮 **Streak Tracking** - Keep track of your winning streak
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone <your-repo-url>
+cd whos-that-pokemon
+
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev      # Start development server
+npm run build    # Create production build
+npm start        # Run production server
+npm run lint     # Run ESLint
+```
 
-## Learn More
+## 🏗️ Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── layout.tsx          # Root layout with metadata
+│   ├── page.tsx            # Home page
+│   └── globals.css         # Global styles
+├── components/
+│   ├── PokemonGame.tsx     # Main game orchestrator
+│   ├── SettingsModal.tsx   # Settings UI
+│   ├── MusicPlayer.tsx     # Audio controls
+│   ├── Pokedex.tsx        # Display component
+│   └── GameControls.tsx    # Input & buttons
+├── hooks/
+│   ├── useAudioPlayer.ts   # BGM management
+│   ├── useSoundEffects.ts  # SFX with Web Audio API
+│   └── usePokemonFetch.ts  # API calls with retry logic
+└── constants/
+    └── gameConfig.ts       # Configuration constants
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🌐 Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Deploy to Vercel (Recommended)
 
-## Deploy on Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=<your-repo-url>)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push your code to GitHub
+2. Import your repository on [Vercel](https://vercel.com)
+3. Vercel will automatically detect Next.js and deploy
+4. Your app will be live in minutes!
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Deploy to Netlify
+
+1. Build the project: `npm run build`
+2. Deploy the `.next` folder to Netlify
+3. Configure build settings:
+   - Build command: `npm run build`
+   - Publish directory: `.next`
+
+### Deploy to Other Platforms
+
+The app is a static Next.js site and can be deployed to:
+- GitHub Pages
+- Cloudflare Pages
+- AWS Amplify
+- Railway
+- Render
+
+## 🎮 How to Play
+
+1. A Pokémon silhouette appears on the Pokédex screen
+2. Type the Pokémon's name in the input field
+3. Click "SCAN" to submit your guess
+4. Correct guesses reveal the Pokémon and play its cry
+5. Build your streak by guessing correctly!
+
+### Settings
+
+Click the ⚙️ icon to customize:
+- **Theme** - Switch between dark and light modes
+- **Audio Levels** - Adjust music, cries, and SFX volumes
+- **Generations** - Select which Pokémon generations to include
+
+## 🛠️ Technologies
+
+- **Framework**: Next.js 16 (App Router)
+- **UI Library**: React 19
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS 4
+- **Font**: Press Start 2P (Google Fonts)
+- **API**: [PokéAPI](https://pokeapi.co/)
+- **Audio**: Web Audio API
+
+## ♿ Accessibility
+
+This project follows WCAG 2.1 guidelines:
+- ✅ ARIA labels on all interactive elements
+- ✅ Keyboard navigation support
+- ✅ Screen reader announcements
+- ✅ Minimum 44px touch targets
+- ✅ Proper focus management
+
+## 🎨 Features Implemented
+
+- ✅ Component refactoring (modular architecture)
+- ✅ Full accessibility compliance
+- ✅ Error handling with retry logic
+- ✅ Performance optimizations
+- ✅ Enhanced SEO metadata
+- ✅ Mobile-optimized UX
+
+## 📝 License
+
+MIT License - feel free to use this project for learning or personal use.
+
+## 🙏 Credits
+
+- Pokémon data from [PokéAPI](https://pokeapi.co/)
+- Music from Pokémon Red/Blue/Yellow
+- Inspired by the classic "Who's That Pokémon?" TV segment
+- Built with ❤️ by [patsawat.kit](https://patsawat.site)
+
+## 🐛 Known Issues
+
+- Browser caching may prevent favicon from updating immediately (hard refresh required)
+- Audio autoplay may be blocked on some browsers (click anywhere to enable)
+
+## 🔮 Future Enhancements
+
+- [ ] Multiplayer mode
+- [ ] Daily challenges
+- [ ] Achievement system
+- [ ] Pokédex collection tracker
+- [ ] Leaderboard with backend
+- [ ] PWA support
+
+---
+
+**Gotta guess 'em all!** 🎯
