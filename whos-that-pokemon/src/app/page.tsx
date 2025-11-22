@@ -27,7 +27,7 @@ export default function Home() {
       
       {/* FOOTER / CREDITS (Resetting font to sans-serif) */}
       <div className="mt-12 text-slate-500 text-sm font-sans z-10 font-medium tracking-wide">
-        Project by <a href="https://patsawat.site" className="text-slate-400 hover:text-white transition underline decoration-slate-600">patsawat.kit</a>
+        Project by <a href="https://ptswt.site" className="text-slate-400 hover:text-white transition underline decoration-slate-600">patsawat.kit</a>
         <span className="mx-2">•</span>
         Built with Next.js & Tailwind
       </div>
