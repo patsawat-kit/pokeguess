@@ -3,22 +3,21 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTriviaFetch } from "../hooks/useTriviaFetch";
-import { updateStreak, checkDailyStreak, getStats } from "../utils/statsManager";
+import { useGameMode } from "../contexts/GameScoreContext";
 
 export default function TriviaMode() {
     const { question, loading, error, fetchTrivia } = useTriviaFetch();
     const [guess, setGuess] = useState("");
     const [isAnswered, setIsAnswered] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
-    const [streak, setStreak] = useState(0);
     const [showHint, setShowHint] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Initialize and check daily streak on mount
+    // Use GameScore Context
+    const { currentStreak, handleWin, handleLoss } = useGameMode('trivia');
+
+    // Initialize daily streak and fetch trivia on mount
     useEffect(() => {
-        checkDailyStreak('trivia');
-        const stats = getStats('trivia');
-        setStreak(stats.currentStreak);
         fetchTrivia();
     }, [fetchTrivia]);
 
@@ -29,7 +28,7 @@ export default function TriviaMode() {
         }
     }, [loading, isAnswered]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!question || isAnswered || !guess.trim()) return;
 
@@ -40,8 +39,11 @@ export default function TriviaMode() {
         setIsCorrect(correct);
         setIsAnswered(true);
 
-        const newStats = updateStreak('trivia', correct);
-        setStreak(newStats.currentStreak);
+        if (correct) {
+            handleWin();
+        } else {
+            handleLoss();
+        }
     };
 
     const handleNext = () => {
@@ -89,7 +91,7 @@ export default function TriviaMode() {
             <div className="bg-yellow-600 p-4 flex justify-between items-center border-b-4 border-yellow-700">
                 <h2 className="text-xl md:text-2xl font-bold text-white drop-shadow-md">WHO'S THAT POKÉMON?</h2>
                 <div className="bg-slate-900/50 px-5 py-1 md:px-4 rounded-full border border-yellow-400/30">
-                    <span className="text-yellow-400 font-mono font-bold text-sm md:text-base">SCORE:{streak}</span>
+                    <span className="text-yellow-400 font-mono font-bold text-sm md:text-base">SCORE:{currentStreak}</span>
                 </div>
             </div>
 

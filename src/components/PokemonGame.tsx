@@ -5,7 +5,7 @@ import { usePokemonFetch } from "../hooks/usePokemonFetch";
 import Pokedex from "./Pokedex";
 import GameControls from "./GameControls";
 import { CONFIG } from "../constants/gameConfig";
-import { updateStreak, checkDailyStreak, getStats } from "../utils/statsManager";
+import { useGameMode } from "../contexts/GameScoreContext";
 
 interface PokemonGameProps {
   selectedGens: number[];
@@ -19,9 +19,12 @@ export default function PokemonGame({ selectedGens, playSound, playCry, isDarkMo
   const [guess, setGuess] = useState("");
   const [isRevealed, setIsRevealed] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
-  const [streak, setStreak] = useState(0);
   const [isChecking, setIsChecking] = useState(false);
   const [message, setMessage] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Use GameScore Context
+  const { currentStreak, handleWin, handleLoss } = useGameMode('classic');
 
   // Pokemon fetch hook
   const { pokemon, loading, error, fetchPokemon } = usePokemonFetch(
@@ -34,64 +37,50 @@ export default function PokemonGame({ selectedGens, playSound, playCry, isDarkMo
     fetchPokemon();
   }, []);
 
-  // Stats Integration
-  useEffect(() => {
-    checkDailyStreak('silhouette');
-    const stats = getStats('silhouette');
-    setStreak(stats.currentStreak);
-  }, []);
-
   // Handle guess submission
   const handleGuess = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pokemon || isChecking) return;
+    if (!pokemon || !guess.trim() || isChecking) return;
 
     setIsChecking(true);
-    setMessage("ANALYZING SPECIMEN...");
-    playSound("beep");
+    try {
+      let cleanGuess = guess.toLowerCase().replace(/[^a-z0-9]/g, "");
+      let cleanName = pokemon.name.toLowerCase().replace(/[^a-z0-9]/g, "");
 
-    await new Promise((resolve) => setTimeout(resolve, CONFIG.CHECKING_DELAY));
+      if (cleanName === "nidoranf") cleanName = "nidoranfemale";
+      if (cleanName === "nidoranm") cleanName = "nidoranmale";
+      if (cleanGuess === "nidoranfemale") cleanGuess = "nidoranf";
+      if (cleanGuess === "nidoranmale") cleanGuess = "nidoranm";
 
-    let cleanGuess = guess.toLowerCase().replace(/[^a-z]/g, "");
-    const cleanName = pokemon.name.toLowerCase().replace(/[^a-z]/g, "");
+      if (cleanGuess === cleanName) {
+        playSound("success");
+        playCry(pokemon.cry);
+        setIsWinner(true);
+        setIsRevealed(true);
 
-    // Handle special cases
-    if (cleanGuess === "nidoranfemale") cleanGuess = "nidoranf";
-    if (cleanGuess === "nidoranmale") cleanGuess = "nidoranm";
+        handleWin();
+        setMessage(`MATCH CONFIRMED: ${pokemon.name.toUpperCase()}`);
+      } else {
+        playSound("error");
 
-    if (cleanGuess === cleanName) {
-      playSound("success");
-      playCry(pokemon.cry);
-      setIsWinner(true);
-      setIsRevealed(true);
-
-      const newStats = updateStreak('silhouette', true);
-      setStreak(newStats.currentStreak);
-
-      setMessage(`MATCH CONFIRMED: ${pokemon.name.toUpperCase()}`);
-    } else {
-      playSound("error");
-
-      const newStats = updateStreak('silhouette', false);
-      setStreak(newStats.currentStreak);
-
-      setMessage("ERROR: DNA MISMATCH");
+        handleLoss();
+        setMessage("ERROR: DNA MISMATCH");
+      }
+    } finally {
+      setIsChecking(false);
     }
-    setIsChecking(false);
-  }, [pokemon, isChecking, guess, playSound, playCry]);
+  }, [pokemon, guess, playSound, playCry, isChecking, handleWin, handleLoss]);
 
   // Handle give up
-  const handleGiveUp = useCallback(() => {
+  const handleGiveUp = useCallback(async () => {
     if (!pokemon) return;
     playSound("error");
     setIsWinner(false);
     setIsRevealed(true);
 
-    const newStats = updateStreak('silhouette', false);
-    setStreak(newStats.currentStreak);
-
+    handleLoss();
     setMessage(`Species: ${pokemon.name.toUpperCase()}`);
-  }, [pokemon, playSound]);
+  }, [pokemon, playSound, handleLoss]);
 
   // Handle new Pokemon fetch
   const handleFetchPokemon = useCallback(() => {
@@ -138,7 +127,7 @@ export default function PokemonGame({ selectedGens, playSound, playCry, isDarkMo
               isWinner={isWinner}
               isChecking={isChecking}
               message={message}
-              streak={streak}
+              streak={currentStreak}
               error={error}
               handleGuess={handleGuess}
               handleGiveUp={handleGiveUp}

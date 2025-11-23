@@ -1,6 +1,7 @@
 // 1. Import the 'Press Start 2P' font (looks like Gameboy text)
 import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
+import { GameScoreProvider } from "@/contexts/GameScoreContext";
 
 // 2. Configure the font
 const pixelFont = Press_Start_2P({
@@ -35,7 +36,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* 3. Apply the font class to the body */}
-      <body className={pixelFont.className}>{children}</body>
+      <body className={pixelFont.className}>
+        <GameScoreProvider>
+          {children}
+        </GameScoreProvider>
+      </body>
     </html>
   );
 }

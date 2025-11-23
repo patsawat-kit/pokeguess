@@ -1,16 +1,12 @@
-export const APP_VERSION = '1.2.1';
+export const APP_VERSION = '1.3.0';
 
 export const RELEASE_NOTES = [
     {
-        title: "Mobile Optimization",
-        description: "The game is now fully playable on mobile devices! We've added a responsive navbar, optimized layouts, and fixed input issues."
+        title: "Authentication System",
+        description: "Create an account to save your progress! Guests can seamlessly migrate their stats upon registration."
     },
     {
-        title: "New Game Modes",
-        description: "Challenge yourself with the new Trivia Mode and track your progress with the Trainer Card!"
-    },
-    {
-        title: "Audio Module",
-        description: "Enjoy the background music with the new minimizable audio player widget."
+        title: "Cloud Save & Sync",
+        description: "Your streaks are now synced to the cloud. Login from any device and pick up right where you left off."
     }
 ];

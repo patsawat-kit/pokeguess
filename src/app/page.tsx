@@ -12,8 +12,9 @@ import { useAudioPlayer } from "@/src/hooks/useAudioPlayer";
 import { useSoundEffects } from "@/src/hooks/useSoundEffects";
 import { ALL_GENERATIONS, BGM_PLAYLIST } from "@/src/constants/gameConfig";
 import ReleaseNotes from "@/src/components/ReleaseNotes";
+import Leaderboard from "@/src/components/Leaderboard";
 
-type ViewType = 'silhouette' | 'trivia' | 'stats';
+type ViewType = 'silhouette' | 'trivia' | 'stats' | 'leaderboard';
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<ViewType>('silhouette');
@@ -59,6 +60,15 @@ export default function Home() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600 rounded-full blur-[120px] opacity-20 pointer-events-none z-0"></div>
 
 
+      {/* BACKGROUND MUSIC AUDIO ELEMENT */}
+      <audio
+        ref={audioPlayer.bgmRef}
+        src={BGM_PLAYLIST[audioPlayer.currentTrackIndex].file}
+        loop
+        preload="auto"
+        onEnded={audioPlayer.handleNextTrack}
+      />
+
       {/* RELEASE NOTES - Fixed to middle-left of content area */}
       <div className="fixed left-0 top-1/2 -translate-y-1/2 z-40">
         <ReleaseNotes />
@@ -82,7 +92,7 @@ export default function Home() {
         currentView={currentView}
       />
 
-      {/* GLOBAL MUSIC PLAYER WIDGET */}
+      {/* MUSIC PLAYER */}
       <MusicPlayer
         isMuted={audioPlayer.isMuted}
         isPlaying={audioPlayer.isPlaying}
@@ -92,72 +102,73 @@ export default function Home() {
         handleNextTrack={audioPlayer.handleNextTrack}
       />
 
-      {/* Background Music Audio Element */}
-      <audio
-        ref={audioPlayer.bgmRef}
-        src={BGM_PLAYLIST[audioPlayer.currentTrackIndex]?.file}
-        onEnded={audioPlayer.handleNextTrack}
-        loop={false}
-      />
-
-      {/* NAVIGATION BAR */}
+      {/* NAVBAR Z-INDEX: 50 */}
       <Navbar
         currentView={currentView}
         onViewChange={setCurrentView}
         onSettingsClick={() => setShowSettings(true)}
       />
 
-      {/* MAIN CONTENT AREA */}
-      <div className="flex-grow flex flex-col items-center justify-start p-4 z-10 overflow-y-auto">
-        <div id="game-container" className="w-full max-w-5xl mt-8">
-          <AnimatePresence mode="wait">
-            {currentView === 'silhouette' && (
-              <motion.div
-                key="silhouette"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <PokemonGame
-                  selectedGens={selectedGens}
-                  playSound={soundEffects.playSound}
-                  playCry={soundEffects.playCry}
-                  isDarkMode={isDarkMode}
-                />
-              </motion.div>
-            )}
-            {currentView === 'trivia' && (
-              <motion.div
-                key="trivia"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <TriviaMode />
-              </motion.div>
-            )}
-            {currentView === 'stats' && (
-              <motion.div
-                key="stats"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <TrainerStats />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+      {/* MAIN CONTENT Z-INDEX: 10 */}
+      <div className="relative z-10 flex-grow flex items-center justify-center px-4 py-8 overflow-auto">
+        <AnimatePresence mode="wait">
+          {currentView === 'silhouette' && (
+            <motion.div
+              key="silhouette"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-5xl"
+            >
+              <PokemonGame
+                selectedGens={selectedGens}
+                playSound={soundEffects.playSound}
+                playCry={soundEffects.playCry}
+                isDarkMode={isDarkMode}
+              />
+            </motion.div>
+          )}
 
-        {/* FOOTER / CREDITS */}
-        <div className="mt-12 mb-8 text-slate-500 text-sm font-sans font-medium tracking-wide text-center">
-          Project by <a href="https://ptswt.site" className="text-slate-400 hover:text-white transition underline decoration-slate-600">patsawat.kit</a>
-          <span className="mx-2">•</span>
-          Built with Next.js & Tailwind
-        </div>
+          {currentView === 'trivia' && (
+            <motion.div
+              key="trivia"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-5xl"
+            >
+              <TriviaMode />
+            </motion.div>
+          )}
+
+          {currentView === 'stats' && (
+            <motion.div
+              key="stats"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-5xl"
+            >
+              <TrainerStats />
+            </motion.div>
+          )}
+
+          {currentView === 'leaderboard' && (
+            <motion.div
+              key="leaderboard"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-5xl"
+            >
+              <Leaderboard />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </main>
   );

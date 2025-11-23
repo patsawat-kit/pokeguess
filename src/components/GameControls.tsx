@@ -17,8 +17,8 @@ interface GameControlsProps {
     message: string;
     streak: number;
     error: string | null;
-    handleGuess: (e: React.FormEvent) => void;
-    handleGiveUp: () => void;
+    handleGuess: (e: React.FormEvent) => Promise<void>;
+    handleGiveUp: () => Promise<void>;
     fetchPokemon: () => void;
 }
 
