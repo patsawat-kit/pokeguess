@@ -83,10 +83,11 @@ export default function Navbar({ currentView, onViewChange, onSettingsClick }: N
                 </button>
               </div>
             ) : (
-              <Link href="/login">
-                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-full transition-colors shadow-lg shadow-blue-600/20">
-                  LOGIN
-                </button>
+              <Link
+                href="/login"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-full transition-colors shadow-lg shadow-blue-600/20 inline-block"
+              >
+                LOGIN
               </Link>
             )}
 
