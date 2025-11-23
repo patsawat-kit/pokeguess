@@ -9,6 +9,12 @@ A nostalgic Pokémon guessing game inspired by the classic "Who's That Pokémon?
 
 ## ✨ Features
 
+### 🔐 Authentication & Cloud Sync
+-  **User Accounts** - Sign up and login with JWT authentication
+-  **Cloud Save** - Progress synced across all devices via NeonDB
+-  **Guest Mode** - Play without account, migrate stats later
+-  **Secure API** - Server-side proxy prevents request interception
+
 ### 🎮 Game Modes
 -  **Silhouette Mode** - Classic "Who's That Pokémon?" guessing game
 -  **Trivia Mode** - Guess Pokémon from Pokédex descriptions with type hints
@@ -24,6 +30,7 @@ A nostalgic Pokémon guessing game inspired by the classic "Who's That Pokémon?
 -  **Streak Tracking** - Keep track of your winning streaks per mode
 -  **Daily Streak** - Maintain your daily play streak
 -  **Trainer Card** - View your stats in a Pokédex-style interface
+-  **Cloud Persistence** - Stats saved to database for logged-in users
 
 ### 🎨 UI/UX
 -  **All 9 Generations** - Choose from Gen 1-9 Pokémon
@@ -69,6 +76,10 @@ npm run lint     # Run ESLint
 ```
 src/
 ├── app/
+│   ├── api/
+│   │   ├── auth/           # Authentication endpoints
+│   │   ├── game/           # Game logic endpoints
+│   │   └── trivia/         # Trivia endpoints
 │   ├── layout.tsx          # Root layout with metadata
 │   ├── page.tsx            # Home page with view switching
 │   └── globals.css         # Global styles
@@ -76,7 +87,7 @@ src/
 │   ├── PokemonGame.tsx     # Silhouette mode game
 │   ├── TriviaMode.tsx      # Trivia mode game
 │   ├── TrainerStats.tsx    # Stats display
-│   ├── Navbar.tsx          # Navigation bar
+│   ├── Navbar.tsx          # Navigation bar with auth
 │   ├── ReleaseNotes.tsx    # Version update notifications
 │   ├── SettingsModal.tsx   # Settings UI
 │   ├── MusicPlayer.tsx     # Minimizable audio controls
@@ -87,6 +98,8 @@ src/
 │   ├── useSoundEffects.ts  # SFX with Web Audio API
 │   ├── usePokemonFetch.ts  # API calls with retry logic
 │   └── useTriviaFetch.ts   # Trivia question fetching
+├── lib/
+│   └── db.ts               # NeonDB connection
 ├── utils/
 │   └── statsManager.ts     # Stats tracking & localStorage
 └── constants/
@@ -127,6 +140,9 @@ Click the ⚙️ icon to customize:
 - **UI Library**: React 19
 - **Language**: TypeScript 5
 - **Styling**: Tailwind CSS 4
+- **Database**: NeonDB (PostgreSQL)
+- **Authentication**: JWT (JSON Web Tokens)
+- **Password Hashing**: bcryptjs
 - **Font**: Press Start 2P (Google Fonts)
 - **API**: [PokéAPI](https://pokeapi.co/)
 - **Audio**: Web Audio API
@@ -142,6 +158,10 @@ This project follows WCAG 2.1 guidelines:
 
 ## 🎨 Features Implemented
 
+- ✅ JWT authentication with user accounts
+- ✅ Cloud-synced stats with NeonDB
+- ✅ Secure server-side API proxy
+- ✅ Guest mode with seamless migration
 - ✅ Component refactoring (modular architecture)
 - ✅ Full accessibility compliance
 - ✅ Error handling with retry logic
@@ -149,10 +169,19 @@ This project follows WCAG 2.1 guidelines:
 - ✅ Enhanced SEO metadata
 - ✅ Mobile-optimized UX with responsive navbar
 - ✅ Multiple game modes (Silhouette, Trivia, Stats)
-- ✅ Stats tracking with localStorage
+- ✅ Stats tracking (localStorage + cloud)
 - ✅ Minimizable audio player
 - ✅ Release notes system with version tracking
 - ✅ Anti-cheat measures
+
+## 🔐 Security Features
+
+- **Server-Side Proxy**: PokéAPI requests routed through backend to prevent client-side interception
+- **Request Signing**: API requests are signed and validated
+- **Rate Limiting**: Protection against abuse and automated requests
+- **HTTPS Only**: All traffic encrypted in production
+- **Password Hashing**: bcryptjs with salt rounds for secure storage
+- **JWT Tokens**: Secure session management
 
 ## 📝 License
 
@@ -175,10 +204,36 @@ MIT License - feel free to use this project for learning or personal use.
 - [ ] Daily challenges
 - [ ] Achievement system
 - [ ] Pokédex collection tracker
-- [ ] Leaderboard with backend
+- [ ] Global leaderboard
 - [ ] PWA support
 - [ ] More game modes (Speed Run, Type Quiz, etc.)
+- [ ] Social features (friend battles, sharing)
 
 ---
+
+## 📄 Changelog
+
+### Version 1.3.0 - November 23, 2024
+- 🔐 **Authentication System**: JWT-based user authentication with sign up and login
+- ☁️ **Cloud Sync**: Cross-device progress synchronization with NeonDB
+- 🔒 **Secure PokeAPI**: Server-side proxy with request signing and rate limiting
+- 📊 **Persistent Stats**: Cloud-based streak and stats tracking
+- 🔄 **Guest Migration**: Seamless stats migration when creating an account
+
+### Version 1.2.0 - November 2024
+- 🎯 **Trivia Mode**: New game mode with Pokédex descriptions and type hints
+- 📈 **Trainer Stats**: Comprehensive stats tracking with streak management
+- 🎵 **Audio System**: Minimizable music player with volume controls
+- 📱 **Mobile Optimization**: Responsive navbar with hamburger menu
+- 📝 **Release Notes**: Kalos Pokédex-styled update notifications
+
+### Version 1.0.0 - October 2024
+- 🎮 **Silhouette Mode**: Classic "Who's That Pokémon?" gameplay
+- 🎨 **Retro Design**: Authentic Pokédex aesthetic with pixel font
+- 🔊 **Sound Effects**: Pokémon cries and UI sounds
+- 🌓 **Theme Toggle**: Dark and light mode support
+- ♿ **Accessibility**: Full WCAG 2.1 compliance
+
+
 
 **Gotta guess 'em all!** 🎯
