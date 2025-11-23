@@ -1,10 +1,18 @@
 import { Pool, neon } from '@neondatabase/serverless';
 
 // Pool for parameterized queries
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+// Pool for parameterized queries
+const pool = process.env.DATABASE_URL
+    ? new Pool({ connectionString: process.env.DATABASE_URL })
+    : new Proxy({} as Pool, {
+        get: () => { throw new Error('Database connection not initialized. DATABASE_URL environment variable is missing.'); }
+    });
 
 // Neon function for tagged template queries
-const sql = neon(process.env.DATABASE_URL!);
+// Neon function for tagged template queries
+const sql: any = process.env.DATABASE_URL
+    ? neon(process.env.DATABASE_URL)
+    : ((...args: any[]) => { throw new Error('Database connection not initialized. DATABASE_URL environment variable is missing.'); });
 
 /**
  * Execute a SQL query with parameters
