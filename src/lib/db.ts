@@ -1,32 +1,21 @@
-import { Pool, neon } from '@neondatabase/serverless';
+import { neon } from '@neondatabase/serverless';
 
-// Pool for parameterized queries
-// Pool for parameterized queries
-const pool = process.env.DATABASE_URL
-    ? new Pool({ connectionString: process.env.DATABASE_URL })
-    : new Proxy({} as Pool, {
-        get: () => { throw new Error('Database connection not initialized. DATABASE_URL environment variable is missing.'); }
-    });
-
-// Neon function for tagged template queries
-// Neon function for tagged template queries
-const sql: any = process.env.DATABASE_URL
+// Neon function for HTTP queries
+const sql = process.env.DATABASE_URL
     ? neon(process.env.DATABASE_URL)
     : ((...args: any[]) => { throw new Error('Database connection not initialized. DATABASE_URL environment variable is missing.'); });
 
 /**
- * Execute a SQL query with parameters
- * @param queryText SQL query string (use $1, $2 for parameters)
- * @param params Array of parameter values
- * @returns Query results
+ * Execute a SQL query using tagged template literal
+ * Example: await query`SELECT * FROM users WHERE id = ${userId}`
  */
 export async function query<T = any>(
-    queryText: string,
-    params: any[] = []
+    strings: TemplateStringsArray,
+    ...values: any[]
 ): Promise<T[]> {
     try {
-        const result = await pool.query(queryText, params);
-        return result.rows as T[];
+        const result = await sql(strings, ...values);
+        return result as T[];
     } catch (error) {
         console.error('Database query error:', error);
         throw error;
@@ -34,14 +23,15 @@ export async function query<T = any>(
 }
 
 /**
- * Execute a single-row query (e.g., INSERT RETURNING, SELECT with LIMIT 1)
+ * Execute a single-row query using tagged template literal
+ * Example: await queryOne`SELECT * FROM users WHERE id = ${userId}`
  */
 export async function queryOne<T = any>(
-    queryText: string,
-    params: any[] = []
+    strings: TemplateStringsArray,
+    ...values: any[]
 ): Promise<T | null> {
-    const result = await pool.query(queryText, params);
-    return (result.rows[0] as T) || null;
+    const result = await query<T>(strings, ...values);
+    return result[0] || null;
 }
 
 /**
@@ -53,17 +43,18 @@ export async function upsertGameStats(
     currentStreak: number,
     bestStreak: number
 ) {
-    const queryText = `
+    // Note: This needs to be converted to tagged template usage or use queryOne with template
+    // Since we are inside db.ts, we can use sql directly or queryOne
+    return queryOne`
     INSERT INTO gamestats (user_id, mode, current_streak, best_streak, last_played)
-    VALUES ($1, $2, $3, $4, CURRENT_DATE)
+    VALUES (${userId}, ${mode}, ${currentStreak}, ${bestStreak}, CURRENT_DATE)
     ON CONFLICT (user_id, mode)
     DO UPDATE SET
-      current_streak = $3,
-      best_streak = GREATEST(gamestats.best_streak, $4),
+      current_streak = ${currentStreak},
+      best_streak = GREATEST(gamestats.best_streak, ${bestStreak}),
       last_played = CURRENT_DATE
     RETURNING *
   `;
-    return queryOne(queryText, [userId, mode, currentStreak, bestStreak]);
 }
 
-export { sql, pool };
+export { sql };

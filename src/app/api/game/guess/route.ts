@@ -57,12 +57,10 @@ export async function POST(request: NextRequest) {
                 const currentStats = await queryOne<{
                     current_streak: number;
                     best_streak: number;
-                }>(
-                    `SELECT current_streak, best_streak 
-           FROM gamestats 
-           WHERE user_id = $1 AND mode = $2`,
-                    [userId, payload.mode]
-                );
+                }>`
+                    SELECT current_streak, best_streak 
+                    FROM gamestats 
+                    WHERE user_id = ${userId} AND mode = ${payload.mode}`;
 
                 const currentDbStreak = currentStats?.current_streak || 0;
                 const currentBestStreak = currentStats?.best_streak || 0;

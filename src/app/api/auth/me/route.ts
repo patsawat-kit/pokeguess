@@ -15,12 +15,10 @@ export async function GET() {
         }
 
         // Fetch user profile
-        const user = await queryOne(
-            `SELECT id, username, email, trainer_id, created_at
-       FROM users
-       WHERE id = $1`,
-            [userId]
-        );
+        const user = await queryOne`
+            SELECT id, username, email, trainer_id, created_at
+            FROM users
+            WHERE id = ${userId}`;
 
         if (!user) {
             return NextResponse.json(
@@ -30,13 +28,11 @@ export async function GET() {
         }
 
         // Fetch user's game stats
-        const stats = await query(
-            `SELECT mode, current_streak, best_streak, last_played
-       FROM gamestats
-       WHERE user_id = $1
-       ORDER BY mode`,
-            [userId]
-        );
+        const stats = await query`
+            SELECT mode, current_streak, best_streak, last_played
+            FROM gamestats
+            WHERE user_id = ${userId}
+            ORDER BY mode`;
 
         // Return user profile and stats
         return NextResponse.json(

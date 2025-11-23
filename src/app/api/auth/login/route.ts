@@ -26,12 +26,16 @@ export async function POST(request: NextRequest) {
         const isEmail = emailRegex.test(identifier);
 
         // Fetch user by email or username
-        const user = await queryOne(
-            `SELECT id, username, email, password_hash, trainer_id, created_at
-       FROM users
-       WHERE ${isEmail ? 'email' : 'username'} = $1`,
-            [identifier]
-        );
+        // Fetch user by email or username
+        const user = isEmail
+            ? await queryOne`
+                SELECT id, username, email, password_hash, trainer_id, created_at
+                FROM users
+                WHERE email = ${identifier}`
+            : await queryOne`
+                SELECT id, username, email, password_hash, trainer_id, created_at
+                FROM users
+                WHERE username = ${identifier}`;
 
         // If user not found or password doesn't match
         if (!user || !(await bcrypt.compare(password, user.password_hash))) {

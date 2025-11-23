@@ -55,12 +55,10 @@ export async function POST(request: NextRequest) {
             const trainer_id = generateTrainerId();
 
             try {
-                user = await queryOne(
-                    `INSERT INTO users (username, email, password_hash, trainer_id)
-           VALUES ($1, $2, $3, $4)
-           RETURNING id, username, email, trainer_id, created_at`,
-                    [username, email, password_hash, trainer_id]
-                );
+                user = await queryOne`
+                    INSERT INTO users (username, email, password_hash, trainer_id)
+                    VALUES (${username}, ${email}, ${password_hash}, ${trainer_id})
+                    RETURNING id, username, email, trainer_id, created_at`;
             } catch (error: any) {
                 attempts++;
 
@@ -107,15 +105,13 @@ export async function POST(request: NextRequest) {
                 for (const mode of modes) {
                     const stats = guestStats[mode];
                     if (stats.currentStreak > 0 || stats.bestStreak > 0) {
-                        await queryOne(
-                            `INSERT INTO gamestats (user_id, mode, current_streak, best_streak)
-                             VALUES ($1, $2, $3, $4)
-                             ON CONFLICT (user_id, mode) DO UPDATE
-                             SET current_streak = GREATEST(gamestats.current_streak, EXCLUDED.current_streak),
-                                 best_streak = GREATEST(gamestats.best_streak, EXCLUDED.best_streak),
-                                 updated_at = NOW()`,
-                            [user.id, mode, stats.currentStreak, stats.bestStreak]
-                        );
+                        await queryOne`
+                            INSERT INTO gamestats (user_id, mode, current_streak, best_streak)
+                            VALUES (${user.id}, ${mode}, ${stats.currentStreak}, ${stats.bestStreak})
+                            ON CONFLICT (user_id, mode) DO UPDATE
+                            SET current_streak = GREATEST(gamestats.current_streak, EXCLUDED.current_streak),
+                                best_streak = GREATEST(gamestats.best_streak, EXCLUDED.best_streak),
+                                updated_at = NOW()`;
                     }
                 }
             } catch (statsError) {
