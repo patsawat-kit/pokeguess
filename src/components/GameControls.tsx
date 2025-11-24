@@ -1,11 +1,5 @@
 import { CONFIG } from '../constants/gameConfig';
-
-interface Pokemon {
-    name: string;
-    image: string;
-    id: number;
-    cry: string;
-}
+import { Pokemon } from '../hooks/usePokemonFetch';
 
 interface GameControlsProps {
     pokemon: Pokemon | null;

@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json({
                     success: true,
                     correct: isCorrect,
-                    correctAnswer: correctAnswer,
+                    correctAnswer: isCorrect ? correctAnswer : undefined,
                     newStreak: newStreak,
                     bestStreak: newBestStreak,
                     authenticated: true,
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json({
                     success: true,
                     correct: isCorrect,
-                    correctAnswer: correctAnswer,
+                    correctAnswer: isCorrect ? correctAnswer : undefined,
                     error: 'Failed to update stats',
                 });
             }
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({
                 success: true,
                 correct: isCorrect,
-                correctAnswer: correctAnswer,
+                correctAnswer: isCorrect ? correctAnswer : undefined,
                 newStreak: newStreak,
                 authenticated: false,
             });

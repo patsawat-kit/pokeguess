@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { usePokemonFetch } from "../hooks/usePokemonFetch";
 import Pokedex from "./Pokedex";
 import GameControls from "./GameControls";
-import { CONFIG } from "../constants/gameConfig";
 import { useGameMode } from "../contexts/GameScoreContext";
 
 interface PokemonGameProps {
@@ -27,7 +26,7 @@ export default function PokemonGame({ selectedGens, playSound, playCry, isDarkMo
   const { currentStreak, handleWin, handleLoss } = useGameMode('classic');
 
   // Pokemon fetch hook
-  const { pokemon, loading, error, fetchPokemon } = usePokemonFetch(
+  const { pokemon, loading, error, fetchPokemon, gameToken, setPokemon } = usePokemonFetch(
     selectedGens,
     playSound
   );
@@ -40,47 +39,93 @@ export default function PokemonGame({ selectedGens, playSound, playCry, isDarkMo
   // Handle guess submission
   const handleGuess = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pokemon || !guess.trim() || isChecking) return;
+    if (!pokemon || !guess.trim() || isChecking || !gameToken) return;
 
     setIsChecking(true);
     try {
-      let cleanGuess = guess.toLowerCase().replace(/[^a-z0-9]/g, "");
-      let cleanName = pokemon.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const response = await fetch('/api/game/guess', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          guess: guess,
+          gameToken: gameToken,
+          currentStreak: currentStreak,
+        }),
+      });
 
-      if (cleanName === "nidoranf") cleanName = "nidoranfemale";
-      if (cleanName === "nidoranm") cleanName = "nidoranmale";
-      if (cleanGuess === "nidoranfemale") cleanGuess = "nidoranf";
-      if (cleanGuess === "nidoranmale") cleanGuess = "nidoranm";
+      const data = await response.json();
 
-      if (cleanGuess === cleanName) {
+      if (data.success && data.correct) {
         playSound("success");
-        playCry(pokemon.cry);
+        // Reveal name and cry
+        // We need to fetch reveal data to get the cry if it wasn't in the guess response
+        // But wait, the guess response returns correctAnswer.
+        // We might need to call reveal to get the cry if we didn't store it.
+        // Actually, let's just call reveal to get everything properly.
+        // Or better, update guess API to return cry?
+        // For now, let's call reveal to be safe and consistent.
+
+        const revealResponse = await fetch('/api/game/reveal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gameToken }),
+        });
+        const revealData = await revealResponse.json();
+
+        if (revealData.success) {
+          setPokemon(prev => prev ? { ...prev, name: revealData.name, cry: revealData.cry } : null);
+          playCry(revealData.cry);
+          setMessage(`MATCH CONFIRMED: ${revealData.name.toUpperCase()}`);
+        } else {
+          setMessage(`MATCH CONFIRMED: ${data.correctAnswer.toUpperCase()}`);
+        }
+
         setIsWinner(true);
         setIsRevealed(true);
-
         handleWin();
-        setMessage(`MATCH CONFIRMED: ${pokemon.name.toUpperCase()}`);
       } else {
         playSound("error");
-
         handleLoss();
         setMessage("ERROR: DNA MISMATCH");
       }
+    } catch (err) {
+      console.error("Guess error:", err);
+      setMessage("SYSTEM ERROR");
     } finally {
       setIsChecking(false);
     }
-  }, [pokemon, guess, playSound, playCry, isChecking, handleWin, handleLoss]);
+  }, [pokemon, guess, playSound, playCry, isChecking, handleWin, handleLoss, gameToken, currentStreak, setPokemon]);
 
   // Handle give up
   const handleGiveUp = useCallback(async () => {
-    if (!pokemon) return;
-    playSound("error");
-    setIsWinner(false);
-    setIsRevealed(true);
+    if (!pokemon || !gameToken) return;
 
-    handleLoss();
-    setMessage(`Species: ${pokemon.name.toUpperCase()}`);
-  }, [pokemon, playSound, handleLoss]);
+    try {
+      const response = await fetch('/api/game/reveal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ gameToken }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setPokemon(prev => prev ? { ...prev, name: data.name, cry: data.cry } : null);
+        playSound("error");
+        setIsWinner(false);
+        setIsRevealed(true);
+        handleLoss();
+        setMessage(`Species: ${data.name.toUpperCase()}`);
+        // Optionally play cry on give up? No, usually just show name.
+      }
+    } catch (err) {
+      console.error("Reveal error:", err);
+    }
+  }, [pokemon, playSound, handleLoss, gameToken, setPokemon]);
 
   // Handle new Pokemon fetch
   const handleFetchPokemon = useCallback(() => {

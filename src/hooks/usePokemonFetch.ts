@@ -1,67 +1,61 @@
 import { useState, useCallback } from 'react';
-import { CONFIG, GEN_RANGES } from '../constants/gameConfig';
+import { CONFIG } from '../constants/gameConfig';
 
-interface Pokemon {
-    name: string;
+export interface Pokemon {
+    name?: string;
     image: string;
     id: number;
-    cry: string;
+    cry?: string;
 }
 
 export function usePokemonFetch(selectedGens: number[], playSound: (type: "beep" | "success" | "error") => void) {
     const [pokemon, setPokemon] = useState<Pokemon | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    const fetchPokemonWithRetry = async (id: number, retries = CONFIG.MAX_RETRIES): Promise<any | null> => {
-        for (let i = 0; i < retries; i++) {
-            try {
-                const res = await fetch(`${CONFIG.API_URL}/pokemon/${id}`);
-                if (!res.ok) throw new Error('API error');
-                return await res.json();
-            } catch (error) {
-                if (i === retries - 1) {
-                    console.error('Failed to fetch Pokemon after retries', error);
-                    return null;
-                }
-                // Exponential backoff
-                await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-            }
-        }
-        return null;
-    };
+    const [gameToken, setGameToken] = useState<string | null>(null);
 
     const fetchPokemon = useCallback(async () => {
         playSound("beep");
         setLoading(true);
         setError(null);
+        setGameToken(null);
 
+        // Artificial delay for suspense
         await new Promise((resolve) => setTimeout(resolve, CONFIG.LOADING_DELAY));
 
-        const validGens = selectedGens.length > 0 ? selectedGens : [1];
-        const randomGenKey = validGens[Math.floor(Math.random() * validGens.length)];
-        const [min, max] = GEN_RANGES[randomGenKey];
-
-        const randomId = Math.floor(Math.random() * (max - min + 1)) + min;
-
         try {
-            const data = await fetchPokemonWithRetry(randomId);
+            const response = await fetch('/api/game/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    selectedGens,
+                    mode: 'classic'
+                }),
+            });
 
-            if (!data) {
-                setError("CONNECTION ERROR - RETRY?");
-                setPokemon(null);
-            } else {
+            if (!response.ok) {
+                throw new Error('Failed to start game');
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
                 setPokemon({
-                    name: data.name,
-                    image: data.sprites.front_default,
-                    id: data.id,
-                    cry: data.cries.latest || data.cries.legacy
+                    image: data.imageUrl,
+                    id: data.pokemonId,
+                    // Name and cry are hidden initially
                 });
+                setGameToken(data.gameToken);
                 setError(null);
+            } else {
+                setError("SYSTEM ERROR - RETRY?");
+                setPokemon(null);
             }
         } catch (error) {
             console.error("Failed to fetch Pokemon", error);
-            setError("SYSTEM ERROR - RETRY?");
+            setError("CONNECTION ERROR - RETRY?");
             setPokemon(null);
         } finally {
             setLoading(false);
@@ -72,6 +66,8 @@ export function usePokemonFetch(selectedGens: number[], playSound: (type: "beep"
         pokemon,
         loading,
         error,
+        gameToken,
         fetchPokemon,
+        setPokemon, // Exporting setPokemon to allow updating it with revealed data
     };
 }

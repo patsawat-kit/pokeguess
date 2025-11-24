@@ -1,9 +1,4 @@
-interface Pokemon {
-    name: string;
-    image: string;
-    id: number;
-    cry: string;
-}
+import { Pokemon } from "../hooks/usePokemonFetch";
 
 interface PokedexProps {
     loading: boolean;
@@ -28,7 +23,7 @@ export default function Pokedex({ loading, isChecking, pokemon, isRevealed }: Po
                     <div
                         className="bg-slate-700 border-4 md:border-8 border-slate-500 rounded-lg h-48 sm:h-64 md:h-80 flex items-center justify-center relative overflow-hidden shadow-inner transition-all"
                         role="img"
-                        aria-label={loading ? "Loading Pokemon" : isRevealed && pokemon ? `Pokemon: ${pokemon.name}` : "Pokemon silhouette"}
+                        aria-label={loading ? "Loading Pokemon" : isRevealed && pokemon?.name ? `Pokemon: ${pokemon.name}` : "Pokemon silhouette"}
                     >
                         <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:20px_20px]"></div>
 
@@ -41,7 +36,7 @@ export default function Pokedex({ loading, isChecking, pokemon, isRevealed }: Po
                             pokemon && (
                                 <img
                                     src={pokemon.image}
-                                    alt={isRevealed ? `Pokemon: ${pokemon.name}` : "Mystery Pokemon"}
+                                    alt={isRevealed && pokemon.name ? `Pokemon: ${pokemon.name}` : "Mystery Pokemon"}
                                     className={`w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 object-contain z-10 rendering-pixelated transition-all duration-300 select-none
                     ${isRevealed
                                             ? "brightness-100 filter-none scale-110"
